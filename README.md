@@ -1,9 +1,8 @@
-﻿Laravel 5 Admin Amazing feedback
+﻿Laravel 5 Admin Amazing adminrole
 ======================
 after install this packages, you need install base admin
 [adminamazing](https://github.com/selfrelianceme/adminamazing)
-and base roles
-[roles](https://github.com/romanbican/roles)
+and base [roles](https://github.com/romanbican/roles)
 
 -----------------
 Install via composer
