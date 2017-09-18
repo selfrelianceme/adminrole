@@ -5,6 +5,7 @@ namespace Selfreliance\adminrole;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
+use Bican\Roles\Models\Role;
 use DB;
 
 class AdminRoleController extends Controller
@@ -17,12 +18,11 @@ class AdminRoleController extends Controller
 
     public function affixRole(Request $request)
     {
-	    $created = DB::table('roles')->where('id', $request['role']);
+	    $created = DB::table('roles')->where('id', $request['role'])->value('name');
 	    if($created)
 	    {
 		    $user = User::findOrFail($request['user']);
-		    $affixed = DB::table('role_user')->where('user_id', $user)->orWhere('role_id', $request['role']);
-		    if(!$affixed)
+		    if(!$user->isRole($created))
 		    {
 		    	$user->attachRole($request->input('role'));
 		    	return redirect()->route('AdminRoles')->with('status', 'Роль для пользователя прикреплена!');
@@ -39,18 +39,19 @@ class AdminRoleController extends Controller
     		'slug_role' => 'required|min:2'
     	]);
 
-    	$created = DB::table('roles')->where('name', $request['name_role']);
-    	if(!$created)
-    	{
-    		Role::create([
-			    'name' => $request->input('name_role'),
-			    'slug' => $request->input('slug_role'),
-			    'description' => '',
-			    'level' => 1
-			]);
-			return redirect()->route('AdminRoles')->with('status', 'Роль успешно создана!');
-    	}
-    	else return redirect()->route('AdminRoles')->with('status', 'Данная роль уже существует!');
+
+        $created = DB::table('roles')->where('name', $request['name_role'])->value('id');
+        if($created) return redirect()->route('AdminRoles')->with('status', 'Данная роль уже существует!');
+    	else
+        {
+            Role::create([
+                'name' => $request->input('name_role'),
+                'slug' => $request->input('slug_role'),
+                'description' => '',
+                'level' => 1
+            ]);
+            return redirect()->route('AdminRoles')->with('status', 'Роль успешно создана!');
+        }
     }
 
     public function detachRole($id)
