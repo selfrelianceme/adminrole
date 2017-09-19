@@ -1,6 +1,8 @@
 @extends('adminamazing::teamplate')
 
-@section('pageTitle', 'Создание роли')
+@if($type == 'roles') @section('pageTitle', 'Создание роли')
+@elseif($type == 'permissions') @section('pageTitle', 'Создание прав')
+@endif
 @section('content')
     <div class="row">
         <!-- Column -->
@@ -24,23 +26,31 @@
                             @endforeach
                         @endif
 
-                        <form action="{{route('AdminCreateRole')}}" method="POST" class="form-horizontal form-material">
+                        <form action="{{route('AdminCreate', $type)}}" method="POST" class="form-horizontal form-material">
                             <div class="form-group">
-                                <label for="name_role" class="col-md-12">Имя роли</label>
+                                <label for="name" class="col-md-12">Имя</label>
                                 <div class="col-md-12">
-                                    <input type="text" placeholder="" class="form-control form-control-line" name="name_role" id="name_role">
+                                    <input type="text" placeholder="" class="form-control form-control-line" name="name" id="name">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="slug_role" class="col-md-12">Имя обращения</label>
+                                <label for="slug" class="col-md-12">Имя обращения</label>
                                 <div class="col-md-12">
-                                     <input type="text" placehorder="" class="form-control form-control-line" name="slug_role" id="slug_role">
+                                     <input type="text" placehorder="" class="form-control form-control-line" name="slug" id="slug">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="description" class="col-md-12">Описание</label>
+                                <div class="col-md-12">
+                                   <textarea style="height:220px" class="form-control form-control-line" name="description" id="description"></textarea>
                                 </div>
                             </div>
                             {{ csrf_field() }}
                             <div class="form-group">
                                 <div class="col-sm-12">
-                                    <button class="btn btn-success">Создать роль</button>
+                                    @if($type == 'roles') <button class="btn btn-success">Создать роль</button>
+                                    @elseif($type == 'permissions') <button class="btn btn-success">Создать права</button>
+                                    @endif
                                 </div>
                             </div>
                         </form>

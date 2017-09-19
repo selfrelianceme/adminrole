@@ -1,6 +1,8 @@
 @extends('adminamazing::teamplate')
 
-@section('pageTitle', 'Прикрепление роли')
+@if($type == 'roles') @section('pageTitle', 'Прикрепление роли')
+@elseif($type == 'permissions') @section('pageTitle', 'Прикрепление прав')
+@endif
 @section('content')
     <div class="row">
         <!-- Column -->
@@ -24,13 +26,13 @@
                             @endforeach
                         @endif
 
-                        <form action="{{route('AdminAffixRole')}}" method="POST" class="form-horizontal form-material">
+                        <form action="{{route('AdminAffix', $type)}}" method="POST" class="form-horizontal form-material">
                             <div class="form-group">
-                                <label for="role" class="col-md-12">Выберите роль</label>
+                                <label for="select_attach" class="col-md-12">Выберите роль</label>
                                 <div class="col-md-12">
-                                    <select class="selectpicker" name="role" id="role">
-                                        @foreach ($roles as $role)
-                                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                    <select class="selectpicker" name="id" id="select_attach">
+                                        @foreach ($what_to_attach as $attach)
+                                            <option value="{{ $attach->id }}">{{ $attach->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
