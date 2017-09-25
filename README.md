@@ -2,7 +2,7 @@
 ======================
 after install this packages, you need install base admin
 [adminamazing](https://github.com/selfrelianceme/adminamazing)
-and base [roles](https://github.com/selfreliance/fixroles)
+and base [roles](https://github.com/selfrelianceme/fixroles)
 
 -----------------
 Install via composer
