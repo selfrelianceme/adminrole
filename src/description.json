@@ -1,0 +1,7 @@
+{
+  "route":"AdminRolesHome",
+  "description": "Список ролей",
+  "icon": "mdi mdi-console",
+  "config": "adminrole.roles",
+  "subMenuUsers": true
+}

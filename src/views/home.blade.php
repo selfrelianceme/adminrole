@@ -1,78 +1,94 @@
 @extends('adminamazing::teamplate')
 
-@if($type == 'roles') @section('pageTitle', 'Управление ролями')
-@elseif($type == 'permissions') @section('pageTitle', 'Управление правами')
-@endif
+@section('pageTitle', 'Роли админов')
 @section('content')
     <div class="row">
         <!-- Column -->
         <div class="col-12">
             <div class="card">
                 <div class="card-block">
-                    <h4 class="card-title">@yield('pageTitle')</h4>
-                    <div class="text-right">
-                        <div class="btn-group">
-                            @if($type == 'roles')
-                            <a href="{{route('AdminCreate', 'roles')}}" class="btn btn-success" role="button"><i class="fa fa-plus" aria-hidden="true"></i> Создать роль</a>
-                            <a href="{{route('AdminAffix', 'roles')}}" class="btn btn-success" role="button"><i class="fa fa-paperclip" aria-hidden="true"></i> Прикрепить роль</a>
-                            @elseif($type == 'permissions')
-                            <a href="{{route('AdminCreate', 'permissions')}}" class="btn btn-success" role="button"><i class="fa fa-plus" aria-hidden="true"></i> Создать права</a>
-                            <a href="{{route('AdminAffix', 'permissions')}}" class="btn btn-success" role="button"><i class="fa fa-paperclip" aria-hidden="true"></i> Прикрепить права</a>
-                            @endif
+                    <h4 class="card-title">@yield('pageTitle')</h4>               
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs customtab2" role="tablist">
+                        <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#list_role" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Список ролей</span></a></li>
+                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#create_role" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Создать роль</span></a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div class="tab-pane p-20 active" id="list_role" role="tabpanel">
+                            @if(count($roles) > 0)             
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Имя</th>
+                                            <th class="text-nowrap">Действие</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($roles as $role)
+                                        <tr>
+                                            <td>{{ $role->id }}</td>
+                                            <td>{{ $role->name }}</td>
+                                            <td class="text-nowrap">     
+                                                <form action="{{route('AdminRolesDelete', ['id' => $role->id])}}" method="POST">     
+                                                    {{ method_field('DELETE') }}
+                                                    {{ csrf_field() }}
+                                                    <button class="btn btn-link" data-toggle="tooltip" data-original-title="Удалить роль"><i class="fa fa-close text-danger"></i></button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        @endforeach                             
+                                    </tbody>                         
+                                </table>
+                            </div>
+                            @else
+                            <div class="alert alert-info">
+                                <h3 class="text-info"><i class="fa fa-exclamation-circle"></i> Информация</h3> На данный момент отсутствуют роли
+                            </div>
+                            @endif                         
                         </div>
-                    </div>                    
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    @if($type == 'roles') <th>Role</th>
-                                    @elseif($type == 'permissions') <th>Permission</th>
-                                    @endif
-                                    <th>User</th>
-                                    <th>Date of appointment</th>
-                                    <th class="text-nowrap">Действие</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @inject('DB', 'Illuminate\Support\Facades\DB')
-                                @foreach($what_to_transfer as $transfer)
-                                @if($type == 'roles')
-                                <tr>
-                                    <td>{{DB::table('roles')->where('id', $transfer->role_id)->value('name')}}</span></td>
-                                    <td>{{DB::table('users')->where('id', $transfer->user_id)->value('name')}}</td>
-                                    <td>{{ $transfer->created_at }}</td>
-                                    <td class="text-nowrap">     
-                                        <form action="{{route('AdminDetach', ['id'=>$transfer->id, 'type'=>$type])}}" method="POST">     
-                                            {{ method_field('DELETE') }}
-                                            {{ csrf_field() }}                                 
-                                            <button class="btn btn-link" data-toggle="tooltip" data-original-title="Удалить роль пользователю"><i class="fa fa-close text-danger"></i></button>
-                                        </form>
-                                    </td> 
-                                </tr>
-                                @elseif($type == 'permissions')
-                                <tr>
-                                    <td>{{DB::table('permissions')->where('id', $transfer->role_id)->value('name')}}</span></td>
-                                    <td>{{DB::table('users')->where('id', $transfer->user_id)->value('name')}}</td>
-                                    <td>{{ $transfer->created_at }}</td>
-                                    <td class="text-nowrap">
-                                        <form action="{{route('AdminDetach', ['id'=>$transfer->id, 'type'=>$type])}}" method="POST">
-                                            {{ method_field('DELETE') }}
-                                            {{ csrf_field() }}
-                                            <button class="btn btn-link" data-toggle="tooltip" data-original-title="Удалить права пользователю"><i class="fa fa-close text-dange"></i></button>
-                                        </form>
-                                    </td>
-                                </tr>
+                        <div class="tab-pane p-20" id="create_role" role="tabpanel">
+                            <div class="card-block">
+                                @if ($errors->any())
+                                    @foreach ($errors->all() as $error)
+                                        <div class="alert alert-danger">
+                                            {{ $error }}
+                                        </div>
+                                    @endforeach
                                 @endif
-                                @endforeach                             
-                            </tbody>                         
-                        </table>
-                    </div>
-                    
+                                <form action="{{route('AdminRolesCreate')}}" method="POST" class="form-horizontal form-material">
+                                    <div class="form-group">
+                                        <label for="name" class="col-md-12">Имя</label>
+                                        <div class="col-md-12">
+                                            <input type="text" placeholder="" class="form-control form-control-line" name="name" id="name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="slug" class="col-md-12">Имя обращения</label>
+                                        <div class="col-md-12">
+                                             <input type="text" placehorder="" class="form-control form-control-line" name="slug" id="slug">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="description" class="col-md-12">Описание</label>
+                                        <div class="col-md-12">
+                                           <textarea style="height:220px" class="form-control form-control-line" name="description" id="description"></textarea>
+                                        </div>
+                                    </div>
+                                    {{ csrf_field() }}
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <button class="btn btn-success">Создать роль</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>    
                 </div>
-            </div>
-            <nav aria-label="Page navigation example" class="m-t-40">
-                {{ $what_to_transfer->links('vendor.pagination.bootstrap-4') }}
-            </nav>            
+            </div>            
         </div>
         <!-- Column -->    
     </div>
