@@ -33,6 +33,6 @@ Create role
 ```
 ![alt tag](https://i.imgur.com/Zkx1zL2.png)
 ```
-Delete/edit role
+List roles
 ```
 ![alt tag](https://i.imgur.com/XHDtaec.png)
