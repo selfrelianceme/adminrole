@@ -5,7 +5,7 @@ namespace Selfreliance\adminrole;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
-use Selifreliance\fixroles\Models\Role;
+use Selfreliance\fixroles\Models\Role;
 use DB;
 
 class AdminRoleController extends Controller
@@ -16,35 +16,99 @@ class AdminRoleController extends Controller
         return view('adminrole::home')->with(['roles' => $roles]);
     }
 
+    public function checkExistRole($name)
+    {
+        $check = DB::table('roles')->where('name', $name)->first();
+        if($check) return 1;
+        else if(!$check) return 0;
+        return -1;
+    }
+
     public function create(Request $request)
     {
     	$this->validate($request, [
     		'name' => 'required|min:2',
-    		'slug' => 'required|min:2',
-            'description' => 'min:2'
     	]);
-        $created = DB::table('roles')->where('name', $request['name'])->value('id');
-        if($created) return redirect()->route('AdminRolesHome')->with('status', 'Данная роль уже существует!');
+
+        $privilegions = collect([]);
+        foreach($request->input() as $key => $privilegion){
+            if(strpos($key, 'privilegion_') !== false){
+                if($key != 'privilegion_admin') $key = str_replace('privilegion_', '', $key);
+                else $key = str_replace('privilegion_', '/admin', $key);
+                $privilegions->push($key);
+            } 
+        }
+
+        if($this->checkExistRole($request['name'])) return redirect()->route('AdminRolesHome')->with('status', 'Данная роль уже существует!');
         else{
             Role::create([
                 'name' => $request->input('name'),
-                'slug' => $request->input('slug'),
-                'description' => $request->input('description')
+                'slug' => $request->input('name')
             ]);
-            return redirect()->route('AdminRolesControl')->with('status', 'Роль успешно создана!');
+            $this->attach(1, $request['name'], $privilegions);
+            return redirect()->route('AdminRolesHome')->with('status', 'Роль успешно создана!');
         }
     }
 
-    public function delete($id)
+    public function edit($name)
     {
-        $created = DB::table('roles')->where('id', $id);
-        if($created)
+        if($this->checkExistRole($name))
         {
-            $users = User::all();
-            foreach($users as $user) $user->detachRole($id);
-            $created->delete();
-            return redirect()->route('AdminRolesControl')->with('status', 'Роль удалена!');
+            $privilegion = json_decode(
+                DB::table('admin__sections')->where('name', $name)->value('privilegion')
+            );
+            return view('adminrole::edit')->with(['name' => $name, 'privilegions' => $privilegion]);
+        }else redirect()->route('AdminRolesHome');       
+    }
+
+    public function update(Request $request)
+    {
+        if($this->checkExistRole($request['name'])){
+            $this->validate($request, [
+                'name' => 'required|min:2'
+            ]);
+
+            $privilegions = collect([]);
+            foreach($request->input() as $key => $privilegion){
+                if(strpos($key, 'privilegion_') !== false){
+                    if($key != 'privilegion_admin') $key = str_replace('privilegion_', '', $key);
+                    else $key = str_replace('privilegion_', '/admin', $key);
+                    $privilegions->push($key);
+                }
+            }
+            $this->attach(2, $request['name'], $privilegions);
+            return redirect()->route('AdminRolesHome')->with('status', 'Роль отредактирована!');
+        }else redirect()->route('AdminRolesHome');
+    }
+
+    public function attach($type, $name, $privilegions)
+    {
+        if($type == 1){
+            return DB::table('admin__sections')->insert(
+                    ['name' => $name, 'privilegion' => $privilegions]
+            );
+        }else if($type == 2){
+            if($this->checkExistRole($name)){
+                if(!count($privilegions)) $privilegions = collect([""]);
+                return DB::table('admin__sections')->where('name', $name)->update(
+                    ['privilegion' => $privilegions]
+                );
+            }
         }
-        else return redirect()->route('AdminRolesControl');
+    }
+
+    public function delete($name)
+    {
+        if($this->checkExistRole($name)){
+            $users = User::all();
+            foreach($users as $user) $user->detachRole($name);
+
+            $role = DB::table('roles')->where('name', $name);
+            $sections = DB::table('admin__sections')->where('name', $name);
+
+            $role->delete();
+            $sections->delete();
+            return redirect()->route('AdminRolesHome')->with('status', 'Роль удалена!');
+        }else return redirect()->route('AdminRolesHome');
     }
 }

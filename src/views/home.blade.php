@@ -21,21 +21,20 @@
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Имя</th>
+                                            <th>Название группы</th>
                                             <th class="text-nowrap">Действие</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($roles as $role)
                                         <tr>
-                                            <td>{{ $role->id }}</td>
                                             <td>{{ $role->name }}</td>
                                             <td class="text-nowrap">     
-                                                <form action="{{route('AdminRolesDelete', ['id' => $role->id])}}" method="POST">     
+                                                <form action="{{ route('AdminRolesDelete', $role->name) }}" method="POST">     
                                                     {{ method_field('DELETE') }}
                                                     {{ csrf_field() }}
-                                                    <button class="btn btn-link" data-toggle="tooltip" data-original-title="Удалить роль"><i class="fa fa-close text-danger"></i></button>
+                                                    <a href="{{ route('AdminRolesEdit', $role->name) }}" data-toggle="tooltip" data-original-title="Редактировать"> <i class="fa fa-pencil text-inverse m-r-10"></i> </a>
+                                                    <button class="btn btn-link" data-toggle="tooltip" data-original-title="Удалить"><i class="fa fa-close text-danger"></i></button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -58,30 +57,32 @@
                                         </div>
                                     @endforeach
                                 @endif
-                                <form action="{{route('AdminRolesCreate')}}" method="POST" class="form-horizontal form-material">
+                                <form action="{{route('AdminRolesCreate')}}" method="POST" class="form-horizontal">
                                     <div class="form-group">
                                         <label for="name" class="col-md-12">Имя</label>
                                         <div class="col-md-12">
                                             <input type="text" placeholder="" class="form-control form-control-line" name="name" id="name">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="slug" class="col-md-12">Имя обращения</label>
-                                        <div class="col-md-12">
-                                             <input type="text" placehorder="" class="form-control form-control-line" name="slug" id="slug">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="description" class="col-md-12">Описание</label>
-                                        <div class="col-md-12">
-                                           <textarea style="height:220px" class="form-control form-control-line" name="description" id="description"></textarea>
-                                        </div>
+                                            <div class="text-right"><button class="btn btn-primary btn-md" data-toggle="collapse" data-target="#privilegions">Показать/Скрыть разделы</button></div>
+                                            <div id="privilegions" class="collapse">
+                                                @foreach($decodeArrayJson as $oneJson)
+                                                    @if(array_key_exists('prefix', $oneJson))
+                                                    <div class="form-group">
+                                                        <div class="form-check">
+                                                            <label class="custom-control custom-checkbox">
+                                                                <input type="checkbox" name="privilegion_{{$oneJson->prefix}}" class="custom-control-input">
+                                                                <span class="custom-control-indicator"></span>
+                                                                <span class="custom-control-description">{{$oneJson->description}}</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        </div>                                        
                                     </div>
                                     {{ csrf_field() }}
-                                    <div class="form-group">
-                                        <div class="col-sm-12">
-                                            <button class="btn btn-success">Создать роль</button>
-                                        </div>
+                                    <div class="col-sm-12">
+                                        <button class="btn btn-success btn-md">Создать роль</button>
                                     </div>
                                 </form>
                             </div>
