@@ -33,7 +33,7 @@ class AdminRoleController extends Controller
         $privilegions = collect([]);
         foreach($request->input() as $key => $privilegion){
             if(strpos($key, 'privilegion_') !== false){
-                if($key != 'privilegion_admin') $key = str_replace('privilegion_', '', $key);
+                if($key == 'privilegion_admin') $key = str_replace('privilegion_', '', $key);
                 else $key = str_replace('privilegion_', '/admin', $key);
                 $privilegions->push($key);
             } 
@@ -71,7 +71,7 @@ class AdminRoleController extends Controller
             $privilegions = collect([]);
             foreach($request->input() as $key => $privilegion){
                 if(strpos($key, 'privilegion_') !== false){
-                    if($key != 'privilegion_admin') $key = str_replace('privilegion_', '', $key);
+                    if($key == 'privilegion_admin') $key = str_replace('privilegion_', '', $key);
                     else $key = str_replace('privilegion_', '/admin', $key);
                     $privilegions->push($key);
                 }
