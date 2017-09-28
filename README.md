@@ -26,7 +26,7 @@ php artisan vendor:publish
 function checkExistRole($name) // check whether there is a role
 $this->checkExistRole('admin') // usage
 ```
-## Demonstration
+## Demonstration (not for English audience)
 
 ```
 Create role
