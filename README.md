@@ -1,18 +1,34 @@
-﻿Laravel 5 Admin Amazing adminrole
+Laravel 5 Admin Amazing adminrole
 ======================
-after install this packages, you need install base admin
-[adminamazing](https://github.com/selfrelianceme/adminamazing)
-and base [roles](https://github.com/selfrelianceme/fixroles)
 
+## Require
+- [adminamazing](https://github.com/selfrelianceme/adminamazing)
+- [roles](https://github.com/selfrelianceme/fixroles)
+
+## How to install
 -----------------
 Install via composer
 ```
 composer require selfreliance/adminrole
 ```
+Move public fields for view customization
 
-Add Service Provider to `config/app.php` in `providers` section
-```php
-Selfreliance\adminrole\AdminRoleServiceProvider::class,
 ```
+php artisan vendor:publish
+``` 
 
-Go to `http://myapp/admin/adminrole`
+## Functions
+```php
+/* 
+  @ param $name (string)
+  @ return 1 if found and return object, 0 if not found, -1 not found table
+*/
+function checkExistRole($name) // check whether there is a role
+$this->checkExistRole('admin') // usage
+```
+## Demonstration
+
+**Create role**
+![alt tag](https://i.imgur.com/Zkx1zL2.png)
+**Delete/edit role**
+![alt tag](https://i.imgur.com/XHDtaec.png)
