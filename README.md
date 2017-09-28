@@ -28,7 +28,11 @@ $this->checkExistRole('admin') // usage
 ```
 ## Demonstration
 
-**Create role**
+```
+Create role
+```
 ![alt tag](https://i.imgur.com/Zkx1zL2.png)
-**Delete/edit role**
+```
+Delete/edit role
+```
 ![alt tag](https://i.imgur.com/XHDtaec.png)
