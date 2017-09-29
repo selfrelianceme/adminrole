@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
 use Selfreliance\fixroles\Models\Role;
-use DB;
 
 class AdminRoleController extends Controller
 {
@@ -17,13 +16,13 @@ class AdminRoleController extends Controller
     
     public function index()
     {
-        $roles = DB::table('roles')->get();
+        $roles = \DB::table('roles')->get();
         return view('adminrole::home')->with(['roles' => $roles]);
     }
 
     public function checkExistRole($name)
     {
-        $check = DB::table('roles')->where('name', $name)->first();
+        $check = \DB::table('roles')->where('name', $name)->first();
         if($check) return 1;
         else if(!$check) return 0;
         return -1;
@@ -38,8 +37,7 @@ class AdminRoleController extends Controller
         $privilegions = collect([]);
         foreach($request->input() as $key => $privilegion){
             if(strpos($key, 'privilegion_') !== false){
-                if($key == 'privilegion_admin') $key = str_replace('privilegion_', '', $key);
-                else $key = str_replace('privilegion_', '/admin', $key);
+                $key = str_replace('privilegion_', '/admin', $key);
                 $privilegions->push($key);
             } 
         }
@@ -60,7 +58,7 @@ class AdminRoleController extends Controller
         if($this->checkExistRole($name))
         {
             $privilegion = json_decode(
-                DB::table('admin__sections')->where('name', $name)->value('privilegion')
+                \DB::table('admin__sections')->where('name', $name)->value('privilegion')
             );
             return view('adminrole::edit')->with(['name' => $name, 'privilegions' => $privilegion]);
         }else redirect()->route('AdminRolesHome');       
@@ -76,8 +74,7 @@ class AdminRoleController extends Controller
             $privilegions = collect([]);
             foreach($request->input() as $key => $privilegion){
                 if(strpos($key, 'privilegion_') !== false){
-                    if($key == 'privilegion_admin') $key = str_replace('privilegion_', '', $key);
-                    else $key = str_replace('privilegion_', '/admin', $key);
+                    $key = str_replace('privilegion_', '', $key);
                     $privilegions->push($key);
                 }
             }
@@ -89,13 +86,13 @@ class AdminRoleController extends Controller
     public function attach($type, $name, $privilegions)
     {
         if($type == 1){
-            return DB::table('admin__sections')->insert(
+            return \DB::table('admin__sections')->insert(
                     ['name' => $name, 'privilegion' => $privilegions]
             );
         }else if($type == 2){
             if($this->checkExistRole($name)){
                 if(!count($privilegions)) $privilegions = collect([""]);
-                return DB::table('admin__sections')->where('name', $name)->update(
+                return \DB::table('admin__sections')->where('name', $name)->update(
                     ['privilegion' => $privilegions]
                 );
             }
@@ -108,8 +105,8 @@ class AdminRoleController extends Controller
             $users = User::all();
             foreach($users as $user) $user->detachRole($name);
 
-            $role = DB::table('roles')->where('name', $name);
-            $sections = DB::table('admin__sections')->where('name', $name);
+            $role = \DB::table('roles')->where('name', $name);
+            $sections = \DB::table('admin__sections')->where('name', $name);
 
             $role->delete();
             $sections->delete();
