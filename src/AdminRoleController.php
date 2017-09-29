@@ -10,6 +10,11 @@ use DB;
 
 class AdminRoleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('CheckAccess');
+    }
+    
     public function index()
     {
         $roles = DB::table('roles')->get();
