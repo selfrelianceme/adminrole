@@ -15,13 +15,13 @@ Move public fields for view customization
 
 ```
 php artisan vendor:publish
-``` 
+```
 
 ## Functions
 ```php
 /* 
   @ param $name (string)
-  @ return 1 if found and return object, 0 if not found, -1 not found table
+  @ return 1 if found, 0 if not found, -1 not found table
 */
 function checkExistRole($name) // check whether there is a role
 $this->checkExistRole('admin') // usage
