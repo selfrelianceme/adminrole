@@ -87,12 +87,12 @@ class AdminRoleController extends Controller
     {
         if($type == 1){
             return \DB::table('admin__sections')->insert(
-                    ['name' => $name, 'privilegion' => $privilegions]
+                    ['name' => strtolower($name), 'privilegion' => $privilegions]
             );
         }else if($type == 2){
             if($this->checkExistRole($name)){
                 if(!count($privilegions)) $privilegions = collect([""]);
-                return \DB::table('admin__sections')->where('name', $name)->update(
+                return \DB::table('admin__sections')->where('name', strtolower($name))->update(
                     ['privilegion' => $privilegions]
                 );
             }
@@ -106,7 +106,7 @@ class AdminRoleController extends Controller
             foreach($users as $user) $user->detachRole($name);
 
             $role = \DB::table('roles')->where('name', $name);
-            $sections = \DB::table('admin__sections')->where('name', $name);
+            $sections = \DB::table('admin__sections')->where('name', strtolower($name));
 
             $role->delete();
             $sections->delete();
