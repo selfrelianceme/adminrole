@@ -1,7 +1,7 @@
 {
   "name": "selfreliance/adminrole",
   "type": "library",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "Roles for adminamazing",
   "keywords": ["admin", "laravel"],
   "homepage": "https://github.com/selfrelianceme/adminrole",
@@ -28,6 +28,6 @@
     "phpunit/phpunit": "~4.8"
   },
   "autoload": {
-    "psr-4": {"Selfreliance\\adminrole\\": "src/"}
+    "psr-4": {"Selfreliance\\Adminrole\\": "src/"}
   }
 }

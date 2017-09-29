@@ -15,7 +15,7 @@ class AdminRoleServiceProvider extends ServiceProvider
     {
         //
         include __DIR__.'/routes.php';
-        $this->app->make('Selfreliance\adminrole\AdminRoleController');
+        $this->app->make('Selfreliance\Adminrole\AdminRoleController');
         $this->loadViewsFrom(__DIR__.'/views', 'adminrole');
     }
 
