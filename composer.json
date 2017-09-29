@@ -1,7 +1,7 @@
 {
   "name": "selfreliance/adminrole",
   "type": "library",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Roles for adminamazing",
   "keywords": ["admin", "laravel"],
   "homepage": "https://github.com/selfrelianceme/adminrole",
