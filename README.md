@@ -39,11 +39,11 @@ $this->edit('admin') // usage
   @ param $request (put)
 */
 function update(Request $request) // update role, transmit data: name (required && more 2 symbol)
+
 /*
   @ param $type, $name, $privilegions
   @ $type [1] then use this when a column with privileges is not created or [2] then created
 */
-
 function attach($type, $name, $privilegions) // attach privileges to role
 $this->attach(2, 'admin', ['admin','admin/adminrole']); // usage
 // P.S 'admin', 'admin/adminrole' it's prefixes routing: adminamazing, adminrole
