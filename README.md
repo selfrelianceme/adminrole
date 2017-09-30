@@ -2,17 +2,19 @@
 adminrole - a package that allows you to configure access to certain installed packages by adminamazing
 
 ## Require
+
 - [adminamazing](https://github.com/selfrelianceme/adminamazing)
 - [roles](https://github.com/selfrelianceme/fixroles)
 
 ## How to install
------------------
+
 Install via composer
 ```
 composer require selfreliance/adminrole
 ```
 
 ## Functions
+
 ```php
 /*
   @ param $name (string)
