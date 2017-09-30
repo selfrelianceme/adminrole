@@ -11,28 +11,37 @@ Install via composer
 ```
 composer require selfreliance/adminrole
 ```
-Move public fields for view customization
-
-```
-php artisan vendor:publish
-```
 
 ## Functions
 ```php
-/* 
+/*
   @ param $name (string)
   @ return 1 if found, 0 if not found, -1 not found table
 */
 function checkExistRole($name) // check whether there is a role
 $this->checkExistRole('admin') // usage
+/*
+  @ param $request (post)
+*/
+function create(Request $request) // create role, transmit data: name (required && more 2 symbol)
+/*
+  @ param $name (string)
+  @ request type (get)
+*/
+function edit($name) // get all about role with $name and show blade 'edit'
+/*
+  @ param $request (put)
+*/
+function update(Request $request) // update role, transmit data: name (required && more 2 symbol)
+/*
+  @ param $type, $name, $privilegions
+  @ $type [1] then use this when a column with privileges is not created or [2] then created
+*/
+function attach($type, $name, $privilegions) // attach privileges to role
+$this->attach(2, 'admin', ['admin','admin/adminrole']); // usage
+/*
+  @ param $name (string)
+  @ request type (delete)
+*/
+function delete($name) // delete role with $name, detach all users with this role
 ```
-## Demonstration
-
-```
-Create role
-```
-![alt tag](https://i.imgur.com/Zkx1zL2.png)
-```
-List roles
-```
-![alt tag](https://i.imgur.com/XHDtaec.png)
