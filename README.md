@@ -53,4 +53,5 @@ $this->attach(2, 'admin', ['admin','admin/adminrole']); // usage
   @ request type (delete)
 */
 function delete($name) // delete role with $name, detach all users with this role
+$this->delete('admin') // usage
 ```
