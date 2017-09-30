@@ -46,7 +46,7 @@ function update(Request $request) // update role, transmit data: name (required 
 
 function attach($type, $name, $privilegions) // attach privileges to role
 $this->attach(2, 'admin', ['admin','admin/adminrole']); // usage
-// P.S 'admin', 'admin/role' it's prefixes routing: adminamazing, adminrole
+// P.S 'admin', 'admin/adminrole' it's prefixes routing: adminamazing, adminrole
 
 /*
   @ param $name (string)
