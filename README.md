@@ -13,6 +13,8 @@ Install via composer
 composer require selfreliance/adminrole
 ```
 
+And if you have already install/installed package roles - [click here](https://github.com/selfrelianceme/fixroles/blob/master/README.md)
+
 ## Functions
 
 ```php
