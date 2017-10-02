@@ -13,15 +13,6 @@ Install via composer
 composer require selfreliance/adminrole
 ```
 
-Migrations
-```php
-php artisan vendor:publish --provider="Selfreliance\Adminrole\AdminroleServiceProvider" --tag="migrations" --force
-```
-And do not forget about 
-```php 
-php artisan migrate 
-```
-
 ## Functions
 
 ```php
