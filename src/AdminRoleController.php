@@ -20,7 +20,7 @@ class AdminRoleController extends Controller
         return view('adminrole::home')->with(['roles' => $roles]);
     }
 
-    public function checkExistRole($name)
+    public static function checkExistRole($name)
     {
         $check = \DB::table('roles')->where('name', $name)->first();
         if($check) return 1;
