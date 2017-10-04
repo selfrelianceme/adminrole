@@ -13,14 +13,7 @@ Install via composer
 composer require selfreliance/adminrole
 ```
 
-Migrations
-```php
-php artisan vendor:publish --provider="Selfreliance\Adminrole\AdminroleServiceProvider" --tag="migrations" --force
-```
-And do not forget about 
-```php 
-php artisan migrate 
-```
+And if you have already install/installed package roles - [click here](https://github.com/selfrelianceme/fixroles/blob/master/README.md)
 
 ## Functions
 
