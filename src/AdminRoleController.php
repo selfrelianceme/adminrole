@@ -13,7 +13,8 @@ class AdminRoleController extends Controller
     public function index()
     {
         $roles = \DB::table('roles')->get();
-        return view('adminrole::home')->with(['roles' => $roles]);
+        $menu_items = \DB::table('admin__menu')->orderBy('sort', 'asc')->get();
+        return view('adminrole::home')->with(['roles' => $roles, 'menu_items' => $menu_items]);
     }
 
     public static function checkExistRole($name)
@@ -24,6 +25,24 @@ class AdminRoleController extends Controller
         return -1;
     }
 
+    public function create(Request $request)
+    {
+        $this->validate($request, [
+            'role_name' => 'required|min:2'
+        ]);
+        if(!$this->checkExistRole($request['role_name'])){
+            $accessible = $request['sections'];
+            if(!in_array('admin', $accessible)) $accessible[] = 'admin';
+            $accessible = json_encode($accessible);
+            Role::create([
+                'name' => $request['role_name'],
+                'slug' => $request['role_name'],
+                'accessible_pages' => $accessible
+            ]);
+            return redirect()->route('AdminRolesHome')->with('status', 'Роль успешно создана!');
+        }else return redirect()->route('AdminRolesHome')->with('status', 'Данная роль уже существует!');
+    }
+
     public function edit($name, Request $request)
     {
         if($this->checkExistRole($name)){
@@ -31,14 +50,25 @@ class AdminRoleController extends Controller
                 $this->validate($request, [
                     'role_name' => 'required|min:2'
                 ]);
-                \DB::table('roles')->where('name', $name)->update(['name' => $request['role_name']]);
-                return redirect()->route('AdminRolesHome');
+                $accessible = (!is_null($request['sections'])) ? $request['sections'] : [];
+                if(!in_array('admin', $accessible)) $accessible[] = 'admin';
+                $accessible = json_encode($accessible);
+                \DB::table('roles')->where('name', $name)->update([
+                    'name' => $request['role_name'], 
+                    'accessible_pages' => $accessible
+                ]);
+                return redirect()->route('AdminRolesShowEdit', $request['role_name'])->with('status', 'Роль успешно обновлена!');
             }else if($request->isMethod('get')){
-                $menu = \DB::table('admin__menu')->orderBy('sort', 'asc')->get();
+                $menu_items = \DB::table('admin__menu')->orderBy('sort', 'asc')->get();
                 $role = \DB::table('roles')->where('name', $name)->first();
+                $sections = json_decode($role->accessible_pages);
                 $members = \DB::table('role_user')->where('role_id', $role->id)->get();
-                $result = AdminController::makeMenu($menu, json_decode($role->accessible_pages), 2);
-                return view('adminrole::edit')->with(['tree' => $result, 'role_name' => $name, 'members' => $members]);
+                return view('adminrole::edit')->with([
+                    'menu_items' => $menu_items,
+                    'sections' => $sections,
+                    'role_name' => $name, 
+                    'members' => $members
+                ]);
             }
         }else return redirect()->route('AdminRolesHome');
     }
