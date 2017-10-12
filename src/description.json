@@ -1,4 +1,5 @@
 {
   "package": "adminrole",
-  "name": "Роли"
+  "name": "Роли",
+  "icon": "mdi mdi-key"
 }
