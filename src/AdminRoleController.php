@@ -62,7 +62,7 @@ class AdminRoleController extends Controller
                 $menu_items = \DB::table('admin__menu')->orderBy('sort', 'asc')->get();
                 $role = \DB::table('roles')->where('name', $name)->first();
                 $sections = json_decode($role->accessible_pages);
-                $members = \DB::table('role_user')->where('role_id', $role->id)->get();
+                $members = \DB::table('users')->where('role_id', $role->id)->get();
                 return view('adminrole::edit')->with([
                     'menu_items' => $menu_items,
                     'sections' => $sections,
