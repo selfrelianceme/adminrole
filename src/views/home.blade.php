@@ -1,7 +1,24 @@
 @extends('adminamazing::teamplate')
 
-@section('pageTitle', 'Роли админов')
+@section('pageTitle', 'Роли')
 @section('content')
+    <div class="modal fade" id="deleteModal" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('AdminRolesDelete') }}" method="POST" class="form-horizontal">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-body">Вы точно хотите удалить данную роль?</div>
+                    <div class="modal-footer">
+                        {{ method_field('DELETE') }}
+                        <input type="hidden" name="id" value="">
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <!-- Column -->
         <div class="col-12">
@@ -10,8 +27,8 @@
                     <h4 class="card-title">@yield('pageTitle')</h4>               
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs customtab2" role="tablist">
-                        <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#list_role" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Список ролей</span></a></li>
-                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#create_role" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Создать роль</span></a></li>
+                        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#list_role" role="tab"><span class="hidden-sm-up"></span><span class="hidden-xs-down">Список ролей</span></a></li>
+                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#create_role" role="tab"><span class="hidden-sm-up"></span><span class="hidden-xs-down">Создать роль</span></a></li>
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
@@ -21,7 +38,7 @@
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th>Название группы</th>
+                                            <th>Название ролей</th>
                                             <th class="text-nowrap">Действие</th>
                                         </tr>
                                     </thead>
@@ -33,8 +50,8 @@
                                                 <form action="{{ route('AdminRolesDelete', $role->name) }}" method="POST">     
                                                     {{ method_field('DELETE') }}
                                                     {{ csrf_field() }}
-                                                    <a href="{{ route('AdminRolesEdit', $role->name) }}" data-toggle="tooltip" data-original-title="Редактировать"> <i class="fa fa-pencil text-inverse m-r-10"></i> </a>
-                                                    <button class="btn btn-link" data-toggle="tooltip" data-original-title="Удалить"><i class="fa fa-close text-danger"></i></button>
+                                                    <a href="{{ route('AdminRolesEdit', $role->name) }}" data-toggle="tooltip" data-original-title="Редактировать"><i class="fa fa-pencil text-inverse m-r-10"></i></a>
+                                                    <a href="#deleteModal" class="delete_toggle" data-rel="{{ $role->id }}" data-toggle="modal"><i class="fa fa-close text-danger"></i></a>
                                                 </form>
                                             </td>
                                         </tr>
@@ -49,7 +66,7 @@
                             @endif                         
                         </div>
                         <div class="tab-pane p-20" id="create_role" role="tabpanel">
-                            <div class="card-block">
+							<div class="card-block">
                                 @if ($errors->any())
                                     @foreach ($errors->all() as $error)
                                         <div class="alert alert-danger">
@@ -59,24 +76,22 @@
                                 @endif
                                 <form action="{{route('AdminRolesCreate')}}" method="POST" class="form-horizontal">
                                     <div class="form-group">
-                                        <label for="name" class="col-md-12">Имя</label>
-                                        <div class="col-md-12">
-                                            <input type="text" placeholder="" class="form-control form-control-line" name="name" id="name">
-                                            <div class="text-right"><button class="btn btn-primary btn-md" data-toggle="collapse" data-target="#privilegions">Показать/Скрыть разделы</button></div>
-                                            <div id="privilegions" class="collapse">
-                                                @foreach($decodeArrayJson as $oneJson)
-                                                    @if(array_key_exists('prefix', $oneJson))
-                                                    <div class="form-group">
-                                                        <div class="form-check">
-                                                            <label class="custom-control custom-checkbox">
-                                                                <input type="checkbox" name="privilegion_{{$oneJson->prefix}}" class="custom-control-input">
-                                                                <span class="custom-control-indicator"></span>
-                                                                <span class="custom-control-description">{{$oneJson->description}}</span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    @endif
-                                                @endforeach
+                                        <label for="name" class="col-md-6">Имя</label>
+                                        <div class="col-md-6">
+                                            <input type="text" placeholder="" class="form-control form-control-line" name="role_name" id="name">
+                                            <div class="text-right"><button class="btn btn-primary btn-md" data-toggle="collapse" data-target="#items">Показать/Скрыть разделы</button></div>
+                                            <div id="items" class="collapse">
+	                                            @foreach($menu_items as $menu_item)
+	                                            <div class="form-group">
+	                                                <div class="form-check">
+	                                                    <label class="custom-control custom-checkbox">
+	                                                        <input type="checkbox" name = "sections[]" value = "{{ $menu_item->package }}" class="custom-control-input">
+	                                                        <span class="custom-control-indicator"></span>
+	                                                        <span class="custom-control-description">{{$menu_item->title}}</span>
+	                                                    </label>
+	                                                </div>
+	                                           	</div>
+	                                            @endforeach
                                             </div>
                                         </div>                                        
                                     </div>
@@ -85,7 +100,7 @@
                                         <button class="btn btn-success btn-md">Создать роль</button>
                                     </div>
                                 </form>
-                            </div>
+                            </div>                        	
                         </div>
                     </div>    
                 </div>

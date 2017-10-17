@@ -1,9 +1,9 @@
 <?php
 
-Route::group(['prefix' => config('adminamazing.path').'/adminrole', 'middleware' => 'web'], function() {
+Route::group(['prefix' => config('adminamazing.path').'/adminrole', 'middleware' => ['web', 'CheckAccess']], function() {
 	Route::get('/', 'selfreliance\adminrole\AdminRoleController@index')->name('AdminRolesHome');
-	Route::post('/', 'selfreliance\adminrole\AdminRoleController@create')->name('AdminRolesCreate');
-	Route::delete('/delete/{name}', 'selfreliance\adminrole\AdminRoleController@delete')->name('AdminRolesDelete');
-	Route::get('/{name}', 'selfreliance\adminrole\AdminRoleController@edit')->name('AdminRolesEdit');
-	Route::put('/{name}', 'selfreliance\adminrole\AdminRoleController@update')->name('AdminRolesUpdate');
+	Route::get('/edit/{name}', 'selfreliance\adminrole\AdminRoleController@edit')->name('AdminRolesShowEdit');
+	Route::post('/create', 'selfreliance\adminrole\AdminRoleController@create')->name('AdminRolesCreate');
+	Route::post('/edit/{name}', 'selfreliance\adminrole\AdminRoleController@edit')->name('AdminRolesEdit');
+	Route::delete('/delete', 'selfreliance\adminrole\AdminRoleController@destroy')->name('AdminRolesDelete');
 });
