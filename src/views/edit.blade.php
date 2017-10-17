@@ -48,11 +48,7 @@
                     <div class="card-block">
                         <h4 class="card-title">Участники</h4>
                         @foreach($members as $user)
-                            <p>
-                                @php
-                                    echo (\DB::table('users')->where('id', $user->user_id)->value('name'));
-                                @endphp
-                            </p>
+                            <p>{{ $user->name }}</p>
                         @endforeach
                     </div>
                 </div>
