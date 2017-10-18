@@ -12,6 +12,7 @@
                     <div class="modal-body">Вы точно хотите удалить данную роль?</div>
                     <div class="modal-footer">
                         {{ method_field('DELETE') }}
+                        {{ csrf_field() }}
                         <input type="hidden" name="id" value="">
                         <button type="submit" class="btn btn-danger">Удалить</button>
                     </div>
@@ -79,20 +80,17 @@
                                         <label for="name" class="col-md-6">Имя</label>
                                         <div class="col-md-6">
                                             <input type="text" placeholder="" class="form-control form-control-line" name="role_name" id="name">
-                                            <div class="text-right"><button class="btn btn-primary btn-md" data-toggle="collapse" data-target="#items">Показать/Скрыть разделы</button></div>
-                                            <div id="items" class="collapse">
-	                                            @foreach($menu_items as $menu_item)
-	                                            <div class="form-group">
-	                                                <div class="form-check">
-	                                                    <label class="custom-control custom-checkbox">
-	                                                        <input type="checkbox" name = "sections[]" value = "{{ $menu_item->package }}" class="custom-control-input">
-	                                                        <span class="custom-control-indicator"></span>
-	                                                        <span class="custom-control-description">{{$menu_item->title}}</span>
-	                                                    </label>
-	                                                </div>
-	                                           	</div>
-	                                            @endforeach
-                                            </div>
+                                            @foreach($menu_items as $menu_item)
+                                            <div class="form-group">
+                                                <div class="form-check">
+                                                    <label class="custom-control custom-checkbox">
+                                                        <input type="checkbox" name = "sections[]" value = "{{ $menu_item->package }}" class="custom-control-input">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">{{$menu_item->title}}</span>
+                                                    </label>
+                                                </div>
+                                           	</div>
+                                            @endforeach
                                         </div>                                        
                                     </div>
                                     {{ csrf_field() }}
