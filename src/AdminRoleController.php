@@ -29,8 +29,9 @@ class AdminRoleController extends Controller
         $this->validate($request, [
             'role_name' => 'required|min:2'
         ]);
-        if(!$this->checkExistRole($request['role_name'])){
-            $accessible = $request['sections'];
+        if(!$this->checkExistRole($request['role_name']))
+        {
+            $accessible = ($request['sections']) ? $request['sections'] : [];
             if(!in_array('admin', $accessible)) $accessible[] = 'admin';
             $accessible = json_encode($accessible);
             Role::create([
@@ -39,13 +40,16 @@ class AdminRoleController extends Controller
                 'accessible_pages' => $accessible
             ]);
             return redirect()->route('AdminRolesHome')->with('status', 'Роль успешно создана!');
-        }else return redirect()->route('AdminRolesHome')->with('status', 'Данная роль уже существует!');
+        }
+        else return redirect()->route('AdminRolesHome')->with('status', 'Данная роль уже существует!');
     }
 
     public function edit($name, Request $request)
     {
-        if($this->checkExistRole($name)){
-            if($request->isMethod('post')){
+        if($this->checkExistRole($name))
+        {
+            if($request->isMethod('post'))
+            {
                 $this->validate($request, [
                     'role_name' => 'required|min:2'
                 ]);
@@ -57,7 +61,9 @@ class AdminRoleController extends Controller
                     'accessible_pages' => $accessible
                 ]);
                 return redirect()->route('AdminRolesShowEdit', $request['role_name'])->with('status', 'Роль успешно обновлена!');
-            }else if($request->isMethod('get')){
+            }
+            else if($request->isMethod('get'))
+            {
                 $menu_items = \DB::table('admin__menu')->orderBy('sort', 'asc')->get();
                 $role = \DB::table('roles')->where('name', $name)->first();
                 $sections = json_decode($role->accessible_pages);
@@ -69,7 +75,8 @@ class AdminRoleController extends Controller
                     'members' => $members
                 ]);
             }
-        }else return redirect()->route('AdminRolesHome');
+        }
+        else return redirect()->route('AdminRolesHome');
     }
 
     public function destroy(Request $request)
@@ -79,7 +86,8 @@ class AdminRoleController extends Controller
         ]);
 
         $role = $this->checkExistRole($request->input('id'));
-        if($role){
+        if($role)
+        {
             $users = User::all();
             foreach($users as $user)
             {
@@ -90,6 +98,7 @@ class AdminRoleController extends Controller
             $role->delete();
 
             return redirect()->route('AdminRolesHome')->with('status', 'Роль удалена!');
-        }else return redirect()->route('AdminRolesHome');
+        }
+        else return redirect()->route('AdminRolesHome');
     }
 }
