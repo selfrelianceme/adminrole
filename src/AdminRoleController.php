@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
 use Selfreliance\fixroles\Models\Role;
-use Selfreliance\Adminamazing\AdminController;
 
 class AdminRoleController extends Controller
 {
@@ -82,7 +81,10 @@ class AdminRoleController extends Controller
         $role = $this->checkExistRole($request->input('id'));
         if($role){
             $users = User::all();
-            foreach($users as $user) $user->detachRole($role);
+            foreach($users as $user)
+            {
+                if($user->role_id == $role) $user->detachRole($role);
+            }
 
             $role = \DB::table('roles')->where('id', $role);
             $role->delete();
