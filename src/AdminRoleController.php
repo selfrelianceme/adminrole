@@ -83,7 +83,7 @@ class AdminRoleController extends Controller
             $users = User::all();
             foreach($users as $user)
             {
-                if($user->role_id == $role) $user->detachRole($role);
+                if($user->role_id == $role) $user->detachRole();
             }
 
             $role = \DB::table('roles')->where('id', $role);
