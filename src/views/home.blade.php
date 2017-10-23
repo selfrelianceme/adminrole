@@ -2,24 +2,10 @@
 
 @section('pageTitle', 'Роли')
 @section('content')
-    <div class="modal fade" id="deleteModal" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form action="{{ route('AdminRolesDelete') }}" method="POST" class="form-horizontal">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    </div>
-                    <div class="modal-body">Вы точно хотите удалить данную роль?</div>
-                    <div class="modal-footer">
-                        {{ method_field('DELETE') }}
-                        {{ csrf_field() }}
-                        <input type="hidden" name="id" value="">
-                        <button type="submit" class="btn btn-danger">Удалить</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    <script>
+    var route = '{{ route('AdminRolesDelete') }}';
+    var message = 'Вы точно хотите удалить данную роль?';
+    </script>
     <div class="row">
         <!-- Column -->
         <div class="col-12">
@@ -47,13 +33,11 @@
                                         @foreach($roles as $role)
                                         <tr>
                                             <td>{{ $role->name }}</td>
-                                            <td class="text-nowrap">     
-                                                <form action="{{ route('AdminRolesDelete', $role->name) }}" method="POST">     
-                                                    {{ method_field('DELETE') }}
-                                                    {{ csrf_field() }}
-                                                    <a href="{{ route('AdminRolesEdit', $role->name) }}" data-toggle="tooltip" data-original-title="Редактировать"><i class="fa fa-pencil text-inverse m-r-10"></i></a>
-                                                    <a href="#deleteModal" class="delete_toggle" data-rel="{{ $role->id }}" data-toggle="modal"><i class="fa fa-close text-danger"></i></a>
-                                                </form>
+                                            <td class="text-nowrap">        
+                                                {{ method_field('DELETE') }}
+                                                {{ csrf_field() }}
+                                                <a href="{{ route('AdminRolesEdit', $role->id) }}" data-toggle="tooltip" data-original-title="Редактировать"><i class="fa fa-pencil text-inverse m-r-10"></i></a>
+                                                <a href="#deleteModal" class="delete_toggle" data-id="{{ $role->id }}" data-toggle="modal"><i class="fa fa-close text-danger"></i></a>
                                             </td>
                                         </tr>
                                         @endforeach                             

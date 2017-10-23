@@ -10,7 +10,7 @@
                 <div class="tab-content">                   
                     <!--second tab-->
                     <div class="card-block">
-                        <form action = "{{ route('AdminRolesEdit', $role_name) }}" method = "POST" class="form-horizontal">
+                        <form action = "{{ route('AdminRolesEdit', $role_id) }}" method = "POST" class="form-horizontal">
                             <div class="form-group">
                                 <label for="role_name">Имя роли</label>                        
                                 <input type = "text" class = "form-control" name = "role_name" id = "role_name" value = "{{ $role_name }}">
@@ -48,7 +48,10 @@
                     <div class="card-block">
                         <h4 class="card-title">Участники</h4>
                         @foreach($members as $user)
-                            <p>{{ $user->name }}</p>
+                            <p>
+                                {{ $user->name }}
+                                <a href="{{ route('AdminUsersEdit', $user->id) }}" data-toggle="tooltip"><i class="fa fa fa-pencil text-inverse m-r-10"></i></a>
+                            </p>
                         @endforeach
                     </div>
                 </div>
