@@ -55,9 +55,16 @@ class AdminRoleController extends Controller
                 'accessible_pages' => $accessible
             ]);
 
-            return redirect()->route('AdminRolesHome')->with('status', 'Роль успешно создана!');
+            flash()->success('Роль успешно создана!');
+
+            return redirect()->route('AdminRolesHome');
         }
-        else return redirect()->route('AdminRolesHome')->with('status', 'Данная роль уже существует!');
+        else 
+        {
+            flash()->error('Данная роль уже существует!');
+
+            return redirect()->route('AdminRolesHome');
+        }
     }
 
     /**
