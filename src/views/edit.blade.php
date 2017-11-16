@@ -12,10 +12,10 @@
                     <div class="card-block">
                         <form action = "{{ route('AdminRolesEdit', $role_id) }}" method = "POST" class="form-horizontal">
                             <div class="form-group">
-                                <label for="role_name">Имя роли</label>                        
+                                <label for="role_name">{{ trans('translate-roles::role.nameRole') }}</label>                        
                                 <input type = "text" class = "form-control" name = "role_name" id = "role_name" value = "{{ $role_name }}">
                             </div>
-                            <h4 class="card-title">Отображаемые пункты меню</h4>
+                            <h4 class="card-title">{{ trans('translate-roles::role.displayedMenuItems') }}</h4>
                             @foreach($menu_items as $menu_item)
                             <div class="form-group">
                                 <div class="form-check">
@@ -32,7 +32,7 @@
                             </div>
                             @endforeach
                             {{ csrf_field() }}
-                            <button class="btn btn-success btn-block">Обновить</button>                          
+                            <button class="btn btn-success btn-block">{{ trans('translate-roles::role.update') }}</button>                          
                         </form>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                 <div class="tab-content">                   
                     <!--second tab-->
                     <div class="card-block">
-                        <h4 class="card-title">Участники</h4>
+                        <h4 class="card-title">{{ trans('translate-roles::role.participants') }}</h4>
                         @foreach($members as $user)
                             <p>
                                 {{ $user->name }}

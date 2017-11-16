@@ -11,7 +11,6 @@ class AdminRoleController extends Controller
 {
     /**
      * Index
-     * @return view home with roles and menu_items
     */
     public function index()
     {
@@ -21,8 +20,7 @@ class AdminRoleController extends Controller
     }
 
     /**
-     * Static checkExistRole($role)
-     * @return 1 if role created, 0 - not created, -1 - not have roles
+     * Check exist role
     */
     public static function checkExistRole($role)
     {
@@ -34,8 +32,6 @@ class AdminRoleController extends Controller
 
     /**
      * Create role
-     * @param request $request
-     * @return mixed
     */
     public function create(Request $request)
     {
@@ -49,28 +45,26 @@ class AdminRoleController extends Controller
             if(!in_array('admin', $accessible)) $accessible[] = 'admin';
 
             $accessible = json_encode($accessible);
-            Role::create([
-                'name' => $request['role_name'],
-                'slug' => $request['role_name'],
+
+            $data = [
+                'name' => $request->input('role_name'),
                 'accessible_pages' => $accessible
-            ]);
+            ];
 
-            flash()->success('Роль успешно создана!');
+            Role::create($data);
 
-            return redirect()->route('AdminRolesHome');
+            flash()->success( trans('translate-roles::role.createdRole') );
         }
         else 
         {
-            flash()->error('Данная роль уже существует!');
-
-            return redirect()->route('AdminRolesHome');
+            flash()->error( trans('translate-roles::role.existsRole') );
         }
+
+        return redirect()->route('AdminRolesHome');
     }
 
     /**
      * Edit role
-     * @param int id
-     * @param request $request
     */
     public function edit($id, Request $request)
     {
@@ -91,7 +85,9 @@ class AdminRoleController extends Controller
                 $role->accessible_pages = $accessible;
                 $role->save();
 
-                return redirect()->route('AdminRolesShowEdit', $id)->with('status', 'Роль успешно обновлена!');
+                flash()->success( trans('translate-roles::role.updatedRole') );
+
+                return redirect()->route('AdminRolesShowEdit', $id);
             }
             else if($request->isMethod('get'))
             {
@@ -99,23 +95,21 @@ class AdminRoleController extends Controller
                 $role = \DB::table('roles')->where('id', $id)->first();
                 $sections = json_decode($role->accessible_pages);
                 $members = \DB::table('users')->where('role_id', $id)->get();
+                $role_name = $role->name;
+                $role_id = $role->id;
 
-                return view('adminrole::edit')->with([
-                    'menu_items' => $menu_items,
-                    'sections' => $sections,
-                    'role_name' => $role->name,
-                    'role_id' => $id,
-                    'members' => $members
-                ]);
+                return view('adminrole::edit')->with( compact(['menu_items', 'sections', 'role_name', 'role_id', 'members']) );
             }
         }
-        else return redirect()->route('AdminRolesHome');
+        else 
+        {
+            flash()->error( trans('translate-roles::role.notFound') );
+            return redirect()->route('AdminRolesHome');
+        }
     }
 
     /**
      * Destroy role
-     * @param int $id
-     * @return mixed
     */
     public function destroy($id)
     {
@@ -130,8 +124,13 @@ class AdminRoleController extends Controller
             $role = \DB::table('roles')->where('id', $id);
             $role->delete();
 
-            return redirect()->route('AdminRolesHome')->with('status', 'Роль удалена!');
+            flash()->success( trans('translate-roles::role.deletedRole') );
         }
-        else return redirect()->route('AdminRolesHome');
+        else
+        {
+            flash()->error( trans('translate-roles::role.notFound') );
+        }
+        
+        return redirect()->route('AdminRolesHome');
     }
 }
