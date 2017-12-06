@@ -6,25 +6,27 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
 use Selfreliance\fixroles\Models\Role;
+use Selfreliance\adminmenu\Models\AdminMenu;
 
 class AdminRoleController extends Controller
 {
-    public function correctAccessible($sections)
+    protected function correctAccessible($sections)
     {
         $accessible = $sections ?? [];
-        if(!in_array('admin', $accessible))
+        $path = config('adminamazing.path');
+        if(!in_array($path, $accessible))
         {
-            $accessible[] = 'admin';
+            $accessible[] = $path;
         }
         return json_encode($accessible);
     }
 
     public function index()
     {
-        $roles = \DB::table('roles')->get();
-        $menu_items = \DB::table('admin__menu')->orderBy('sort', 'asc')->get();
+        $roles = Role::orderBy('name', 'asc')->get();
+        $menuItems = AdminMenu::orderBy('sort', 'asc')->get();
 
-        return view('adminrole::home')->with( compact('roles', 'menu_items') );
+        return view('adminrole::home', compact('roles', 'menuItems'));
     }
 
     public function create(Request $request)
@@ -33,19 +35,50 @@ class AdminRoleController extends Controller
             'role_name' => 'required|min:2'
         ]);
 
-        $accessible = self::correctAccessible($request['sections']);
-
         $data = [
             'name' => $request->input('role_name'),
             'slug' => $request->input('role_name'),
-            'accessible_pages' => $accessible
+            'accessible_pages' => self::correctAccessible($request['sections'])
         ];
 
-        Role::create($data);
-
-        flash()->success('Роль успешно создана');
+        $role = Role::getRole($request->input('role_name'));
+        if(!$role)
+        {
+            Role::create($data);
+            flash()->success('Роль успешно создана');
+        }
+        else
+        {
+            flash()->error('Роль уже существует');
+        }
 
         return redirect()->route('AdminRolesHome');
+    }
+
+    public function update($id, Request $request)
+    {
+        $role = Role::getRole($id);
+        if($role)
+        {
+            $this->validate($request, [
+                'role_name' => 'required|min:2'
+            ]);
+
+            $data = [
+                'name' => $request->input('role_name'),
+                'accessible_pages' => self::correctAccessible($request['sections'])
+            ];
+
+            $role->update($data);
+
+            flash()->success('Роль успешно обновлена');
+            return redirect()->route('AdminRolesEdit', $id);
+        }
+        else
+        {
+            flash()->error('Роль не найдена');
+            return redirect()->route('AdminRolesHome');
+        }
     }
     
     public function edit($id, Request $request)
@@ -53,32 +86,14 @@ class AdminRoleController extends Controller
         $role = Role::getRole($id);
         if($role)
         {
-            if($request->isMethod('post'))
-            {
-                $this->validate($request, [
-                    'role_name' => 'required|min:2'
-                ]);
+            $menuItems = AdminMenu::orderBy('sort', 'asc')->get();
+            $sections = json_decode($role->accessible_pages);
+            $members =  User::where('role_id', $id)->get();
 
-                $accessible = self::correctAccessible($request['sections']);
+            $roleName = $role->name;
+            $roleID = $role->id;
 
-                $role->name = $request->input('role_name');
-                $role->accessible_pages = $accessible;
-                $role->save();
-
-                flash()->success('Роль успешно обновлена');
-
-                return redirect()->route('AdminRolesShowEdit', $id);
-            }
-            else if($request->isMethod('get'))
-            {
-                $menu_items = \DB::table('admin__menu')->orderBy('sort', 'asc')->get();
-                $sections = json_decode($role->accessible_pages);
-                $members = \DB::table('users')->where('role_id', $id)->get();
-                $role_name = $role->name;
-                $role_id = $role->id;
-
-                return view('adminrole::edit')->with( compact(['menu_items', 'sections', 'role_name', 'role_id', 'members']) );
-            }
+            return view('adminrole::edit', compact('menuItems', 'sections', 'roleName', 'roleID', 'members'));
         }
         else 
         {
@@ -87,9 +102,6 @@ class AdminRoleController extends Controller
         }
     }
 
-    /**
-     * Destroy role
-    */
     public function destroy($id)
     {
         $role = Role::getRole($id);

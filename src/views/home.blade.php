@@ -9,20 +9,17 @@
         </script>
     @endpush
     <div class="row">
-        <!-- Column -->
         <div class="col-12">
             <div class="card">
                 <div class="card-block">
-                    <h4 class="card-title">@yield('pageTitle')</h4>               
-                    <!-- Nav tabs -->
+                    <h4 class="card-title">@yield('pageTitle')</h4>
                     <ul class="nav nav-tabs customtab2" role="tablist">
                         <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#list_role" role="tab"><span class="hidden-sm-up"></span><span class="hidden-xs-down">Список ролей</span></a></li>
                         <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#create_role" role="tab"><span class="hidden-sm-up"></span><span class="hidden-xs-down">Создать  роль</span></a></li>
                     </ul>
-                    <!-- Tab panes -->
                     <div class="tab-content">
                         <div class="tab-pane p-20 active" id="list_role" role="tabpanel">
-                            @if(count($roles) > 0)             
+                            @if(count($roles) > 0)
                             <div class="table-responsive">
                                 <table class="table table-striped">
                                     <thead>
@@ -35,18 +32,18 @@
                                         @foreach($roles as $role)
                                         <tr>
                                             <td>{{ $role->name }}</td>
-                                            <td class="text-nowrap">        
+                                            <td class="text-nowrap">
                                                 {{ method_field('DELETE') }}
                                                 {{ csrf_field() }}
                                                 <a href="{{ route('AdminRolesEdit', $role->id) }}" data-toggle="tooltip" data-original-title="Редактировать"><i class="fa fa-pencil text-inverse m-r-10"></i></a>
                                                 <a href="#deleteModal" class="delete_toggle" data-id="{{ $role->id }}" data-toggle="modal"><i class="fa fa-close text-danger"></i></a>
                                             </td>
                                         </tr>
-                                        @endforeach                             
-                                    </tbody>                         
+                                        @endforeach
+                                    </tbody>
                                 </table>
                             </div>
-                            @endif                         
+                            @endif
                         </div>
                         <div class="tab-pane p-20" id="create_role" role="tabpanel">
 							<div class="card-block">
@@ -61,8 +58,8 @@
                                     <div class="form-group">
                                         <label for="name" class="col-md-6">Название роли</label>
                                         <div class="col-md-6">
-                                            <input type="text" placeholder="" class="form-control form-control-line" name="role_name" id="name">
-                                            @foreach($menu_items as $menu_item)
+                                            <input type="text" name="role_name" id="name" class="form-control form-control-line">
+                                            @foreach($menuItems as $menu_item)
                                             <div class="form-group">
                                                 <div class="form-check">
                                                     <label class="custom-control custom-checkbox">
@@ -73,19 +70,18 @@
                                                 </div>
                                            	</div>
                                             @endforeach
-                                        </div>                                        
+                                        </div>
                                     </div>
                                     {{ csrf_field() }}
                                     <div class="col-sm-12">
                                         <button class="btn btn-success btn-md">Создать</button>
                                     </div>
                                 </form>
-                            </div>                        	
+                            </div>
                         </div>
-                    </div>    
+                    </div>
                 </div>
-            </div>            
+            </div>
         </div>
-        <!-- Column -->    
     </div>
 @endsection

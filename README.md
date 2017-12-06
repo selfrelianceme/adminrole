@@ -4,6 +4,8 @@ adminrole - a package that allows you to configure access to certain installed p
 ## Require
 
 - [adminamazing](https://github.com/selfrelianceme/adminamazing)
+- [iusers](https://github.com/selfrelianceme/iusers)
+- [adminmenu](https://github.com/selfrelianceme/adminmenu)
 - [roles](https://github.com/selfrelianceme/fixroles)
 
 ## How to install
